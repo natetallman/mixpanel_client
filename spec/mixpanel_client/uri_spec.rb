@@ -3,8 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Mixpanel::URI do
   describe '.mixpanel' do
-    it 'should return a properly formatted mixpanel uri as a string (without an
-        endpoint)' do
+    it 'should return a properly formatted mixpanel uri as a string (without an endpoint)' do
       resource, params  = ['events', { c: 'see', a: 'ey' }]
 
       Mixpanel::URI.mixpanel(resource, params).should eq(
@@ -12,8 +11,7 @@ describe Mixpanel::URI do
       )
     end
 
-    it 'should return a properly formatted mixpanel uri as a string (with an
-        endpoint)' do
+    it 'should return a properly formatted mixpanel uri as a string (with an endpoint)' do
       resource, params  = ['events/top', { c: 'see', a: 'ey' }]
 
       Mixpanel::URI.mixpanel(resource, params).should eq(
@@ -21,8 +19,7 @@ describe Mixpanel::URI do
       )
     end
 
-    it 'should return a uri with a different endpoint when doing a raw data
-        export' do
+    it 'should return a uri with a different endpoint when doing a raw data export' do
       resource, params  = ['export', { c: 'see', a: 'ey' }]
 
       Mixpanel::URI.mixpanel(resource, params).should eq(
@@ -30,8 +27,7 @@ describe Mixpanel::URI do
       )
     end
 
-    it 'should return a uri with a the correct endpoint when doing an
-        import' do
+    it 'should return a uri with a the correct endpoint when doing an import' do
       resource, params  = ['import', { c: 'see', a: 'ey' }]
       Mixpanel::URI.mixpanel(resource, params).should eq(
         "#{Mixpanel::Client::IMPORT_URI}/import?a=ey&c=see"
@@ -54,6 +50,16 @@ describe Mixpanel::URI do
       stub_request(:get, 'http://example.com').to_return(body: 'something')
 
       Mixpanel::URI.get('http://example.com').should eq 'something'
+    end
+  end
+
+  describe '.download' do
+    it 'should save a file with the response' do
+      response = '[{"event":"some_event","properties":{"time":1430438400,"distinct_id":"1","$lib_version":"1.6.0"}}]'
+      stub_request(:get, 'http://example.com').to_return(body: response)
+
+      Mixpanel::URI.download('http://example.com', './downloaded_files', 'some_event')
+      File.exists?('./downloaded_files/some_event.json').should be true
     end
   end
 end

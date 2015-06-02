@@ -55,6 +55,11 @@ module Mixpanel
       @parallel ? make_parallel_request : make_normal_request(resource)
     end
 
+    def download(resource, directory, file_name, options)
+      @uri = request_uri(resource, options)
+      URI.download(@uri, directory, file_name)
+    end
+
     def make_parallel_request
       require 'typhoeus'
       parallel_request = prepare_parallel_request

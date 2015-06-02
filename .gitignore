@@ -32,3 +32,4 @@ tmp/
 Gemfile.lock
 pkg/*
 bin/*
+downloaded_files/
