@@ -33,6 +33,7 @@ module Mixpanel
               response.read_body do |chunk|
                 io.write chunk
               end
+              io.flush
             end
           end
         end
