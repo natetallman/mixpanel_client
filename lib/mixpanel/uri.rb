@@ -26,21 +26,31 @@ module Mixpanel
 
       begin
         Net::HTTP.start(uri.host, uri.port, use_ssl: use_ssl) do |http|
-          request  = Net::HTTP::Get.new uri
+          request   = Net::HTTP::Get.new(uri)
+          file_size = 1_200_000
 
           http.request(request) do |response|
             open file, 'w' do |io|
               response.read_body do |chunk|
-                io.write chunk
+                if file_size <= 0
+                  raise Mixpanel::URI::FinishError
+                else
+                  io.write chunk
+                  file_size -= chunk.size
+                end
               end
+
               io.flush
             end
           end
         end
       rescue Net::HTTPError => error
         raise HTTPError, JSON.parse(error.io.read)['error']
+      rescue Mixpanel::URI::FinishError
       end
     end
+
+    class Mixpanel::URI::FinishError < Exception; end
 
     def self.get(uri)
       uri      = URI(uri)
