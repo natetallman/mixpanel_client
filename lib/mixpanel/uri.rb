@@ -27,17 +27,11 @@ module Mixpanel
       begin
         Net::HTTP.start(uri.host, uri.port, use_ssl: use_ssl) do |http|
           request   = Net::HTTP::Get.new(uri)
-          file_size = 10000000000
 
           http.request(request) do |response|
             open file, 'w' do |io|
               response.read_body do |chunk|
-                if file_size <= 0
-                  raise Mixpanel::URI::FinishError
-                else
-                  io.write chunk
-                  file_size -= chunk.size
-                end
+                io.write chunk
               end
 
               io.flush
