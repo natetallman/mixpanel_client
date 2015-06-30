@@ -27,7 +27,7 @@ module Mixpanel
       begin
         Net::HTTP.start(uri.host, uri.port, use_ssl: use_ssl) do |http|
           request   = Net::HTTP::Get.new(uri)
-          file_size = 1_200_000
+          file_size = 10000000000
 
           http.request(request) do |response|
             open file, 'w' do |io|
